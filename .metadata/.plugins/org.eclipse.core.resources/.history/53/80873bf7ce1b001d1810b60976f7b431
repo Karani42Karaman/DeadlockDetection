@@ -1,0 +1,201 @@
+/**
+ * ÖDEV. Ölümcül Kilitlenmeyi Tespit Algoritmasını
+ * (Banker Algoritması değil) kodlayınız. 
+ * Program, Atanmış ve Max. İstek matrislerini giriş olarak alacak,
+ * güvenli durum olup olmadığını ve proseslerin çalışma sırasını,
+ * kilitli olup olmadığını vs. çıkış olarak verecektir.
+ */
+
+/**
+ * @author Karani Karaman 
+ * SAKARYA ÜNİVERSİTESİ 
+ * BİLGİSAYAR VE BİLİŞİM BİLİMLERİ FAKÜLTESİ
+ * BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ
+ * BİLGİSAYAR MÜHENDİSLİĞİ PR.
+ * YAZ OKULU  İŞLETİM SİSTEMLERİ ÖDEVİ
+ */
+
+
+import java.io.*;
+import java.util.*;
+    
+    class Main {
+        static int safe[] = new int[20]; //Array for safe
+        static int unsafe[] = new int[20]; // Array for unsafe
+    
+        static boolean safe(int available[], int allocated[][], int need[][], int n1, int m1) {
+            int n = n1; //number of processes
+            int m = m1; //number of resources
+            int nd[][] = new int[n][m];
+            int work[] = new int[m];
+            int alloc[][] = new int[n][m];
+    
+    
+            for (int i = 0; i < m; i++) { //Work var
+                work[i] = available[i];
+            }
+    
+            /** Print Available Matrix */
+            System.out.println("*** Available Matrix /n");
+            for( int i = 0; i < work.length; i++ ) {
+                System.out.println( work[i] + " " );
+            }
+    
+    
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    alloc[i][j] = allocated[i][j];
+                }
+            }
+    
+            /** Print Allocated Matrix */
+            System.out.println("*** Allocated Matrix /n");
+            for( int i = 0; i < alloc.length; i++ ) {
+                for( int j = 0; j < alloc[i].length; j++ ) {
+                    System.out.print( alloc[i][j] + " " );
+                }
+                System.out.println();
+            }
+    
+    
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    nd[i][j] = need[i][j];
+                }
+            }
+    
+            /** Print Need Matrix */
+            System.out.println("*** Need Matrix ");
+            for( int i = 0; i < nd.length; i++ ) {
+                for( int j = 0; j < nd[i].length; j++ ) {
+                    System.out.print( nd[i][j] + " " );
+                }
+                System.out.println();
+            }
+    
+            /* Hold the finished processes */
+            boolean finish[] = new boolean[n];
+    
+    
+            for (int i = 0; i < n; i++) {
+                finish[i] = false;
+            }
+    
+    
+            int check = 0;
+            int check1 = 0;
+    
+    
+            do {
+                for (int i = 0; i < n; i++) {
+                    boolean flag = true; /* Temp Flag */
+                    if ( finish[i] == false ) {
+                        for (int j = 0; j < m; j++) {
+                            if (work[j] < nd[i][j]) {
+                                flag = false;
+                            }
+                        }
+    
+                        /* If available resources are greater than needed, then assign allocated resources
+                         for processing */
+                        if ( flag ) {
+                            for (int j = 0; j < m; j++) {
+                                work[j] += alloc[i][j];
+                            }
+                            safe[check] = i; /* Put the process number (Pi) in the safe Matrix */
+                            check++;
+                            finish[i] = true;
+                        } else {
+                            unsafe[check] = i; /* Put the process number (Pi) in the safe Matrix */
+                        }
+                    }
+                }
+    
+                check1++; /* Start on the next process */
+            } while ( check < n && check1 < n);
+    
+            if (check > n) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        /** Main Function */
+        public static void main(String args[]) throws IOException {
+            InputStreamReader isr = new InputStreamReader(System.in);
+            BufferedReader obj = new BufferedReader(isr);
+    
+            int n, m;
+            System.out.println("Enter no. of processes: "); /* Enter number of processes. */
+            n = Integer.parseInt(obj.readLine());
+            System.out.println("Enter no. of resources: "); /* Enter number of Resources. */
+            m = Integer.parseInt(obj.readLine());
+    
+            int availableArr[] = new int[m]; // Matrix of available instances
+            for (int i = 0; i < m; i++) {
+                System.out.println("Enter no. of available instances resources: " + i);
+    
+                availableArr[i] = Integer.parseInt(obj.readLine());
+            }
+    
+            System.out.println("Enter allocation of resources: ");
+            // Allocation Matrix. //
+            int allocArr[][] = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    /* Enter allocation of instances of resources. */
+                    System.out.println("Enter allocation instances of resources: " + j + " for process p" + i);
+                    /* Enter allocation of instances of resources. */
+                    allocArr[i][j] = Integer.parseInt(obj.readLine());
+                }
+            }
+    
+            System.out.println("enter maximum of resources: ");
+            int maxArr[][] = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    System.out.println("enter max instances of resources:" + j + "for process p" + i);
+    
+                    maxArr[i][j] = Integer.parseInt(obj.readLine());
+                }
+            }
+    
+            /** Print Max Matrix */
+            System.out.println("*** Max Matrix \n");
+            for( int i = 0; i < maxArr.length; i++ ) {
+                for( int j = 0; j < maxArr[i].length; j++ ) {
+                    System.out.print( maxArr[i][j] + " " );
+                }
+                System.out.println();
+            }
+    
+            /* Calculate Need Matrix */
+            int needArr[][] = new int[n][m];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    /* Need= Max - Allocation */
+                    needArr[i][j] = maxArr[i][j] - allocArr[i][j];
+                }
+            }
+    
+            if ( safe( availableArr, allocArr, needArr, n, m )) {
+                System.out.println("System is at a safe state");
+                System.out.print("System's Safe sequence:");
+                for (int i = 0; i < n; i++) {
+                    System.out.print( "P" + safe[i] + " " );
+                }
+                System.out.println();}
+                else{
+                    System.out.println("The system is at unsafe state");
+                System.out.println("System's UnSafe sequence");
+                for (int i = 0; i < n; i++) {
+                    System.out.print( "P" + unsafe[i] + " " );
+                }
+            }
+            System.out.println("System's UnSafe sequence"); //to print the unsafe sequence if the it's a safe state (lead to deadlock)
+            for (int i = 0; i < n; i++) {
+                System.out.print( "P" + unsafe[i] + " " );
+            }
+    
+    
+        }}

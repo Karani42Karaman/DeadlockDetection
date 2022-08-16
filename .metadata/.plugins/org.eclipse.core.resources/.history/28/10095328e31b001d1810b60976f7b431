@@ -1,0 +1,45 @@
+
+// Class 2
+// Helper class B
+public class B {
+
+	// Method 1 of this class
+	public synchronized void last()
+	{
+
+		// Display statement only
+		System.out.println("Inside B, last() method");
+	}
+
+	// Method 2 of this class
+	// Synchronized the method d2
+	public synchronized void d2(A a)
+	{
+
+		// Display message only
+		System.out.println(
+			"Thread2 start execution of d2() method");
+
+		// Try block to check for exceptions
+		try {
+
+			// Putting the current thread to sleep for
+			// certain time using sleep() method
+			Thread.sleep(2000);
+
+			// Catch block to handle the exceptions
+		}
+		catch (InterruptedException e) {
+
+			// Display the exception on the console
+			System.out.println(e);
+		}
+
+		// Display message only
+		System.out.println(
+			"Thread2 trying to call A's last method");
+
+		// Again calling the last() method inside this class
+		a.last();
+	}
+}
