@@ -1,0 +1,87 @@
+
+import java.util.*;
+
+public class Main {
+
+	public static int ArrMax[][] = new int[100][100];
+	public static int Alloc[][] = new int[100][100];
+	public static int Need[][] = new int[100][100];
+	public static int Avail[] = new int[100];
+	public static int ProccessCount /* n */ , ResourceInstanceCount /* r */;
+
+	public static void main(String[] args) {
+		input();
+	}
+
+	public static void input() {
+		Scanner input = new Scanner(System.in);// kalvyeden giriş işlemleri için Scanner nesnesini tanımladık
+
+		System.out.print("Proccess Sayisini Giriniz :");
+		ProccessCount = input.nextInt();// Proccess sayısını kalvyeden alırıc bu değişkene
+
+		System.out.print("\nKaynak Adedini Giriniz :");
+		ResourceInstanceCount = input.nextInt();
+
+		System.out.println("Max Matrix Giriniz :");
+		for (int i = 0; i < ProccessCount; i++) {
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				ArrMax[i][j] = input.nextInt(); // Max Matrisini alıyoruz klavyeden
+			}
+		}
+
+		System.out.println("Allocation Matrix Giriniz :");
+		for (int i = 0; i < ProccessCount; i++) {
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				Alloc[i][j] = input.nextInt(); // Allocation Matrisini alıyoruz klavyeden
+			}
+		}
+
+		System.out.println("Mevcut Kaynağı Giriniz :");
+		for (int j = 0; j < ResourceInstanceCount; j++) {
+			Avail[j] = input.nextInt(); // Mevcut Kaynağı alıyoruz klavyeden
+		}
+
+		input.close();
+	}
+
+	public static void show() {
+		
+		System.out.print("Process\t Allocation\t Max\t Available\t");		
+		for (int i = 0; i < ProccessCount; i++) {
+			
+			System.out.print("\nP"+(i+1)+"\n");
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				System.out.print(Alloc[i][j] + " ");
+			}
+			System.out.print("\t\t");
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				System.out.print(ArrMax[i][j] + " ");
+			}
+			System.out.print("\t");
+			if(i==0) {
+				for (int j = 0; j <ResourceInstanceCount; j++) {
+					System.out.print(Avail[j] + " ");
+				}
+			}
+		}
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+
+	public static void cal() {
+		int finish[],temp,need[][],flag=1,k,c1=0;
+		
+		
+		
+		
+		
+	}
+}

@@ -1,0 +1,28 @@
+
+public class Main {
+
+	public int ArrMax[][];
+	public int Alloc[][];
+	public int Need[][];
+	public int Avail[];
+	public int n,r;
+	
+	
+	
+	public static void main(String[] args) {
+		
+		
+		
+		
+		// TODO Auto-generated method stub
+
+	}
+	
+	
+	public void input() {
+		
+		
+		
+	}
+
+}
