@@ -3,19 +3,25 @@ import java.util.*;
 
 public class Main {
 
-	public static int ArrMax[][] = new int[100][100];
-	public static int Alloc[][] = new int[100][100];
-	public static int Need[][] = new int[100][100];
-	public static int Avail[] = new int[100];
 	public static int ProccessCount /* n */ , ResourceInstanceCount /* r */;
-
+	public static int ReqMatrix[][];// reaquest matrixi
+	public static int Alloc[][]; // allocation matrixi
+	public static int Resource[]; // kaynak matrisi kaynak bilgilerini alacağız
+	public static int Work[]; // W = Tahsis - Kaynak;
+	public static boolean finish[];
+	/*
+	 * programın çalıştığı ana main methodu
+	 */
 	public static void main(String[] args) {
-		System.out.println("Deadlock Kilitlenme Algoritmasi");
+		System.out.println("Deadlock karnai Kilitlenme Algoritmasi");
 		input();
 		show();
 		cal();
 	}
 
+	/*
+	 * Programın çalışması için gerekli matrisleri alır
+	 */
 	public static void input() {
 		Scanner input = new Scanner(System.in);// kalvyeden giriş işlemleri için Scanner nesnesini tanımladık
 
@@ -25,10 +31,15 @@ public class Main {
 		System.out.print("\nKaynak Adedini Giriniz :");
 		ResourceInstanceCount = input.nextInt();
 
-		System.out.println("Max Matrix Giriniz :");
+		ReqMatrix = new int[ProccessCount][ResourceInstanceCount];
+		Alloc = new int[ProccessCount][ResourceInstanceCount];
+		Resource = new int[ResourceInstanceCount];
+		Work = new int[ResourceInstanceCount];
+
+		System.out.println("Request Matrixi Giriniz :");
 		for (int i = 0; i < ProccessCount; i++) {
 			for (int j = 0; j < ResourceInstanceCount; j++) {
-				ArrMax[i][j] = input.nextInt(); // Max Matrisini alıyoruz klavyeden
+				ReqMatrix[i][j] = input.nextInt(); // Request Matrisini alıyoruz klavyeden
 			}
 		}
 
@@ -39,16 +50,16 @@ public class Main {
 			}
 		}
 
-		System.out.println("Mevcut Kaynağı Giriniz :");
+		System.out.println("Mevcut Kaynagi Giriniz :");
 		for (int j = 0; j < ResourceInstanceCount; j++) {
-			Avail[j] = input.nextInt(); // Mevcut Kaynağı alıyoruz klavyeden
+			Resource[j] = input.nextInt(); // Mevcut Kaynağı alıyoruz klavyeden
 		}
 
 		input.close();
 	}
 
 	public static void show() {
-		System.out.print("Process\t Allocation\t Max\t Available\t");
+		System.out.print("Process\t Allocation\t Request\t Resource\t");
 		for (int i = 0; i < ProccessCount; i++) {
 
 			System.out.print("\nP" + (i + 1) + "\t");
@@ -57,78 +68,82 @@ public class Main {
 			}
 			System.out.print("\t\t");
 			for (int j = 0; j < ResourceInstanceCount; j++) {
-				System.out.print(ArrMax[i][j] + " ");
+				System.out.print(ReqMatrix[i][j] + " ");
 			}
-			System.out.print("\t");
+			System.out.print("\t\t");
 			if (i == 0) {
 				for (int j = 0; j < ResourceInstanceCount; j++) {
-					System.out.print(Avail[j] + " ");
+					System.out.print(Resource[j] + " ");
 				}
 			}
 		}
-
 	}
 
 	public static void cal() {
-		int finish[] = new int[100];
-		int need[][] = new int[100][100];
-		int j;
-		boolean flag = true;// başlangıç değeri
-		int dead[] = new int[100];
+		 finish = new boolean[ProccessCount];
+		int dead[] = new int[ProccessCount];
 
+		// kaynak adedi kadar finish vektörüne false değerini atıyoruz
 		for (int i = 0; i < ResourceInstanceCount; i++) {
-			finish[i] = 0;// burdaki 1 ve sıfır lar true false düşünülecek 1 = true vs 0 = false gibi
+			finish[i] = false;// burda derste anlatıldığı gibi finish matrisini öncelikle false olarak
+								// dolduruyoruz kilitlenmeleri bulmak için kullanacağız
 		}
-		// need matrix i ni bulacağız
-		for (int i = 0; i < ProccessCount; i++) {
-			for (  j = 0; j < ResourceInstanceCount; j++) {
-				need[i][j] = ArrMax[i][j] - Alloc[i][j];
-			}
-		}
-		while (flag) {
-			flag=false;
-			for (int i = 0; i < ProccessCount; i++) {
-				int c = 0;
-				for (  j = 0; j < ResourceInstanceCount; j++) {
 
-					if ((finish[i] == 0) && (need[i][j] <= Avail[j])) {
-						c++;
-						if (c == ResourceInstanceCount) {
-							for (int k = 0; k < ResourceInstanceCount; k++) {
-								Avail[k] += Alloc[i][j];
-								finish[k] = 1;
-								flag = true;
-							}
-							System.out.print("P" + i);
-							if (finish[i] == 1) {
-								i = ProccessCount;
-							}
+		// burda work vektörünü bulacağız (Work = Allocation - Kaynak )
+		int allocSum = 0;
+		for (int i = 0; i < ResourceInstanceCount; i++) {
+			for (int j = 0; j < ProccessCount; j++) {
+				allocSum += Alloc[j][i];
+			}
+			Work[i] = Math.abs(Resource[i] - allocSum);
+			allocSum = 0;
+		}
+
+ 		// burda asıl hesaplama işlerini yapacağız
+		for (int i = 0; i < ProccessCount; i++) {
+			int sayac=0;
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				if (finish[i] == false) {
+					if (ReqMatrix[i][j] <= Work[j]) {// buraya eğer 3 kere doğru dönerse alt işleme devam edecek
+						sayac++;						
+						if(sayac == ResourceInstanceCount) {
+							Calc(i);
 						}
+					} else {
+						break;
 					}
+				} else {
+					break;
 				}
 			}
 		}
-		
-		j=0;
-		flag = false;
+
+		int j = 0;
+		boolean flag = false;
 		for (int i = 0; i < ProccessCount; i++) {
-			if(finish[i] == 0) {
+			if (finish[i] == false) {
 				dead[j] = i;
 				j++;
 				flag = true;
 			}
 		}
-		if(flag) {
-			System.out.print("\n\nSistemde Kilitlenme var ve Kilitlenme sürecleri\n");
+		if (flag) {
+			System.out.print("\n\nSistemde Kilitlenme var ve Kilitlenme surecleri\n");
 			for (int i = 0; i < ProccessCount; i++) {
-				System.out.print("P"+dead[i]+"\t");
+				if (finish[i] == false) {
+					// System.out.print("P" + dead[i] + "\t");
+					System.out.print("P" + i + "\t");
+				}
 			}
-		}else {
+		} else {
 			System.out.println("Deadlock Kilitlenme Yoktur.");
 		}
-		
-		
-		
-		
+	}
+
+	private static void Calc(int i) {
+		finish[i] = true;
+		for (int k = 0; k < ResourceInstanceCount; k++) {
+			Work[k] = Alloc[i][k] + Work[k];
+		}	
 	}
 }

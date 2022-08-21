@@ -1,0 +1,141 @@
+
+import java.util.*;
+
+public class Main {
+
+	public static int ProccessCount  /* n */ , ResourceInstanceCount  /* r */;
+	public static int ReqMatrix[][] = new int[ProccessCount][ResourceInstanceCount];// reaquest matrixi
+	public static int Alloc[][] = new int[ProccessCount][ResourceInstanceCount]; // allocation matrixi
+	public static int Resource[] = new int[ResourceInstanceCount]; // kaynak matrisi kaynak bilgilerini alacağız
+	public static int Work[] = new int[ResourceInstanceCount]; // W = Tahsis - Kaynak;
+
+	/*
+	 * programın çalıştığı ana main methodu
+	 */
+	public static void main(String[] args) {
+		System.out.println("Deadlock karnai Kilitlenme Algoritmasi");
+		input();
+		show();
+		cal();
+	}
+
+	/*
+	 * Programın çalışması için gerekli matrisleri alır
+	 */
+	public static void input() {
+		Scanner input = new Scanner(System.in);// kalvyeden giriş işlemleri için Scanner nesnesini tanımladık
+
+		System.out.print("Proccess Sayisini Giriniz :");
+		ProccessCount = input.nextInt();// Proccess sayısını kalvyeden alırıc bu değişkene
+
+		System.out.print("\nKaynak Adedini Giriniz :");
+		ResourceInstanceCount = input.nextInt();
+
+		System.out.println("Request Matrixi Giriniz :");
+		for (int i = 0; i < ProccessCount; i++) {
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				ReqMatrix[i][j] = input.nextInt(); // Request Matrisini alıyoruz klavyeden
+			}
+		}
+
+		System.out.println("Allocation Matrix Giriniz :");
+		for (int i = 0; i < ProccessCount; i++) {
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				Alloc[i][j] = input.nextInt(); // Allocation Matrisini alıyoruz klavyeden
+			}
+		}
+
+		System.out.println("Mevcut Kaynagi Giriniz :");
+		for (int j = 0; j < ResourceInstanceCount; j++) {
+			Resource[j] = input.nextInt(); // Mevcut Kaynağı alıyoruz klavyeden
+		}
+
+		input.close();
+	}
+
+	public static void show() {
+		System.out.print("Process\t Allocation\t Request\t Resource\t");
+		for (int i = 0; i < ProccessCount; i++) {
+
+			System.out.print("\nP" + (i + 1) + "\t");
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				System.out.print(Alloc[i][j] + " ");
+			}
+			System.out.print("\t\t");
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				System.out.print(ReqMatrix[i][j] + " ");
+			}
+			System.out.print("\t\t");
+			if (i == 0) {
+				for (int j = 0; j < ResourceInstanceCount; j++) {
+					System.out.print(Resource[j] + " ");
+				}
+			}
+		}
+
+	}
+
+	public static void cal() {
+		boolean finish[] = new boolean[100];
+
+		int dead[] = new int[100];
+
+		// kaynak adedi kadar finish vektörüne false değerini atıyoruz
+		for (int i = 0; i < ResourceInstanceCount; i++) {
+			finish[i] = false;// burda derste anlatıldığı gibi finish matrisini öncelikle false olarak
+								// dolduruyoruz kilitlenmeleri bulmak için kullanacağız
+		}
+
+		// burda work vektörünü bulacağız (Work = Allocation - Kaynak )
+		int allocSum = 0;
+		for (int i = 0; i < ResourceInstanceCount; i++) {
+			for (int j = 0; j < ProccessCount; j++) {
+				allocSum += Alloc[j][i];
+			}
+			Work[i] = Math.abs(Resource[i] - allocSum);
+			allocSum = 0;
+		}
+
+		// burda asıl hesaplama işlerini yapacağız
+		for (int i = 0; i < ProccessCount; i++) {
+			for (int j = 0; j < ResourceInstanceCount; j++) {
+				if (finish[i] == false) {
+					if (ReqMatrix[i][j] <= Work[j]) {
+						finish[i] = true;
+						Work[j] = Alloc[i][j] + Work[j];
+					}else {
+						break;
+					}
+				}else {
+					break;
+				}
+			}
+		}
+
+		int j = 0;
+		boolean flag = false;
+		for (int i = 0; i < ProccessCount; i++) {
+			if (finish[i] == false) {
+				dead[j] = i;
+				j++;
+				flag = true;
+			}
+		}
+		if (flag) {
+			System.out.print("\n\nSistemde Kilitlenme var ve Kilitlenme surecleri\n");
+			for (int i = 0; i < ProccessCount; i++) {
+				if (finish[i] == false) {
+					// System.out.print("P" + dead[i] + "\t");
+					System.out.print("P" + i + "\t");
+				}
+			}
+		} else {
+			System.out.println("Deadlock Kilitlenme Yoktur.");
+		}
+
+		/*
+		 * // workü bulduk for (int i = 0; i < ResourceInstanceCount; i++) {
+		 * System.out.print(Work[i] + " "); }
+		 */
+	}
+}
