@@ -21,7 +21,7 @@ public class DetectionAlgorithm {
 	 * programın çalıştığı ana main methodu
 	 */
 	public static void main(String[] args) {
-		System.out.println("\t\tDeadlock  Detection Algoritmasi\n");
+		System.out.println("Deadlock karnai Kilitlenme Algoritmasi");
 		input();
 		show();
 		cal();
@@ -36,7 +36,7 @@ public class DetectionAlgorithm {
 		System.out.print("Proccess Sayisini Giriniz :");
 		ProccessCount = input.nextInt();// Proccess sayısını kalvyeden alırıc bu değişkene
 
-		System.out.print("Kaynak Adedini Giriniz :");
+		System.out.print("\nKaynak Adedini Giriniz :");
 		ResourceInstanceCount = input.nextInt();
 		// kullanıcıdan almış olduğumuz procces ve resource instance ına göre gerekli matris boyutlarını giriyoruz 
 		ReqMatrix = new int[ProccessCount][ResourceInstanceCount];

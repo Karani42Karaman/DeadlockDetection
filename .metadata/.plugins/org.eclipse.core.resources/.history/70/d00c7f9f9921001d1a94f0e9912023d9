@@ -21,7 +21,7 @@ public class DetectionAlgorithm {
 	 * programın çalıştığı ana main methodu
 	 */
 	public static void main(String[] args) {
-		System.out.println("\t\tDeadlock  Detection Algoritmasi\n");
+		System.out.println("Deadlock karnai Kilitlenme Algoritmasi");
 		input();
 		show();
 		cal();

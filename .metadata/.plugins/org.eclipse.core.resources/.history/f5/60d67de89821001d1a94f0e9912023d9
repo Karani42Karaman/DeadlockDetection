@@ -6,7 +6,7 @@ import java.util.Scanner;
  * 22/08/2022 
  * SAKARYA ÜNİVERSİTESİ BİLGİSAYAR MÜHENDİSLİĞİ BÖLÜMÜ YAZ OKULU 
  * İŞLETİM SİSTEMLERİ DERSİ ÖDEVİ
- * DEADLOCK KİLİTLENMELERİNİ DETECTİON ALGORİTMASI YAKLAŞIMI  İLE TESPİTİ
+ *
  */
 public class DetectionAlgorithm {
 
@@ -21,7 +21,7 @@ public class DetectionAlgorithm {
 	 * programın çalıştığı ana main methodu
 	 */
 	public static void main(String[] args) {
-		System.out.println("\t\tDeadlock  Detection Algoritmasi\n");
+		System.out.println("Deadlock karnai Kilitlenme Algoritmasi");
 		input();
 		show();
 		cal();
@@ -36,7 +36,7 @@ public class DetectionAlgorithm {
 		System.out.print("Proccess Sayisini Giriniz :");
 		ProccessCount = input.nextInt();// Proccess sayısını kalvyeden alırıc bu değişkene
 
-		System.out.print("Kaynak Adedini Giriniz :");
+		System.out.print("\nKaynak Adedini Giriniz :");
 		ResourceInstanceCount = input.nextInt();
 		// kullanıcıdan almış olduğumuz procces ve resource instance ına göre gerekli matris boyutlarını giriyoruz 
 		ReqMatrix = new int[ProccessCount][ResourceInstanceCount];
@@ -50,12 +50,14 @@ public class DetectionAlgorithm {
 				ReqMatrix[i][j] = input.nextInt(); // Request Matrisini alıyoruz klavyeden
 			}
 		}
+
 		System.out.println("Allocation Matrix Giriniz :");
 		for (int i = 0; i < ProccessCount; i++) {
 			for (int j = 0; j < ResourceInstanceCount; j++) {
 				Alloc[i][j] = input.nextInt(); // Allocation Matrisini alıyoruz klavyeden
 			}
 		}
+
 		System.out.println("Mevcut Kaynagi Giriniz :");
 		for (int j = 0; j < ResourceInstanceCount; j++) {
 			Resource[j] = input.nextInt(); // Mevcut Kaynağı alıyoruz klavyeden
@@ -93,6 +95,7 @@ public class DetectionAlgorithm {
 			finish[i] = false;// burda derste anlatıldığı gibi finish matrisini öncelikle false olarak
 								// dolduruyoruz kilitlenmeleri bulmak için kullanacağız
 		}
+
 		// burda work vektörünü bulacağız (Work = Allocation - Kaynak )
 		int allocSum = 0;
 		for (int i = 0; i < ResourceInstanceCount; i++) {
@@ -102,6 +105,7 @@ public class DetectionAlgorithm {
 			Work[i] = Math.abs(Resource[i] - allocSum);
 			allocSum = 0;
 		}
+
 		// burda asıl hesaplama işlerini yapacağız
 		for (int i = 0; i < ProccessCount; i++) {
 			int sayac = 0;
@@ -121,6 +125,7 @@ public class DetectionAlgorithm {
 				}
 			}
 		}
+		
 		if (flag) {
 			System.out.print("\n\nSistemde Kilitlenme var ve Kilitlenme surecleri\n");
 			for (int i = 0; i < ProccessCount; i++) {
@@ -132,6 +137,7 @@ public class DetectionAlgorithm {
 			System.out.println("Deadlock Kilitlenme Yoktur.");
 		}
 	}
+
 	// tüm şartlar oluştukdan sonra Work Matrisi yeniden bulunur.
 	private static void Calc(int i) {
 		finish[i] = true;
@@ -139,4 +145,5 @@ public class DetectionAlgorithm {
 			Work[k] = Alloc[i][k] + Work[k];
 		}
 	}
+
 }
