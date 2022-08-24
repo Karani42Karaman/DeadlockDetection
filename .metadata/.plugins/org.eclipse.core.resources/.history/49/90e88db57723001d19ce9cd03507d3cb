@@ -68,7 +68,7 @@ public class DetectionAlgorithm {
 		System.out.print("Process\t Allocation\t Request\t Resource\t");
 		for (int i = 0; i < ProccessCount; i++) {
 
-			System.out.print("\nP" + (i) + "\t");
+			System.out.print("\nP" + (i + 1) + "\t");
 			for (int j = 0; j < ResourceInstanceCount; j++) {
 				System.out.print(Alloc[i][j] + " ");
 			}
